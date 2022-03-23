@@ -1,5 +1,6 @@
 #include "gamepad.h"
 #include <Xinput.h>
+#include <iostream>
 
 namespace pad2key{
     // Default constructor
@@ -13,10 +14,7 @@ namespace pad2key{
 
     XINPUT_STATE Gamepad::GetState()
     {
-        XINPUT_STATE state;
-        XInputGetState(_index, &state);
-    
-        return state;
+        return _state;
     }
 
     int Gamepad::GetIndex()
@@ -32,5 +30,25 @@ namespace pad2key{
             return true;
         else
             return false;
+    }
+
+    bool Gamepad::GetButtonPressed(int button)
+    {
+        if (_state.Gamepad.wButtons != _prev_state.Gamepad.wButtons && _prev_state.Gamepad.wButtons & button)
+        {
+            return true;
+        }
+ 
+        return false;
+    }
+
+    void Gamepad::Update()
+    {
+        XINPUT_STATE state;
+        XInputGetState(_index, &state);
+
+        _prev_state = _state;
+        _state = state;
+        
     }
 }

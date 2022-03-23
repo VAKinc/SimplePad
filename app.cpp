@@ -16,6 +16,19 @@ int main(){
         std::cout << "Not connected.\n";
     }
 
-    std::cout << "Press 'Enter' to exit.";
-    std::cin.get();
+    bool is_listening = true;
+    while(is_listening){
+        pad.Update();
+        if(pad.GetButtonPressed(XINPUT_GAMEPAD_A)){
+            INPUT inp = {0};
+            inp.type = INPUT_KEYBOARD;
+            inp.ki.wVk = 0x57;
+            inp.ki.wScan = MapVirtualKeyEx(0x57, 0, (HKL)0xf0010413);
+            SendInput(1, &inp, sizeof(inp));
+        }
+
+        if(pad.GetButtonPressed(XINPUT_GAMEPAD_START)){
+            is_listening = false;
+        }
+    }
 }

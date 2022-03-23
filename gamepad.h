@@ -11,12 +11,15 @@ namespace pad2key{
             Gamepad();
             Gamepad(int i);
         
+            void Update();
             XINPUT_STATE GetState();
             int GetIndex();
             bool Connected();
+            bool GetButtonPressed(int button);
 
         private:
             XINPUT_STATE _state;
+            XINPUT_STATE _prev_state;
             int _index;
     };
     
