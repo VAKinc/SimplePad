@@ -19,7 +19,7 @@ int main(){
     bool is_listening = true;
     while(is_listening){
         pad.Update();
-        if(pad.GetButtonPressed(XINPUT_GAMEPAD_A)){
+        if(pad.GetButtonUp(XINPUT_GAMEPAD_A)){
             INPUT inp = {0};
             inp.type = INPUT_KEYBOARD;
             inp.ki.wVk = 0x57;
@@ -27,7 +27,7 @@ int main(){
             SendInput(1, &inp, sizeof(inp));
         }
 
-        if(pad.GetButtonPressed(XINPUT_GAMEPAD_START)){
+        if(pad.GetButtonDown(XINPUT_GAMEPAD_START)){
             is_listening = false;
         }
     }

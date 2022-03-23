@@ -32,9 +32,29 @@ namespace pad2key{
             return false;
     }
 
-    bool Gamepad::GetButtonPressed(int button)
+    bool Gamepad::GetButtonUp(int button)
     {
         if (_state.Gamepad.wButtons != _prev_state.Gamepad.wButtons && _prev_state.Gamepad.wButtons & button)
+        {
+            return true;
+        }
+ 
+        return false;
+    }
+
+    bool Gamepad::GetButtonDown(int button)
+    {
+        if (_state.Gamepad.wButtons != _prev_state.Gamepad.wButtons && _state.Gamepad.wButtons & button)
+        {
+            return true;
+        }
+ 
+        return false;
+    }
+
+    bool Gamepad::GetButton(int button)
+    {
+        if (_state.Gamepad.wButtons & button)
         {
             return true;
         }

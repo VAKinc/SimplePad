@@ -15,7 +15,9 @@ namespace pad2key{
             XINPUT_STATE GetState();
             int GetIndex();
             bool Connected();
-            bool GetButtonPressed(int button);
+            bool GetButtonUp(int button);
+            bool GetButtonDown(int button);
+            bool GetButton(int button);
 
         private:
             XINPUT_STATE _state;
