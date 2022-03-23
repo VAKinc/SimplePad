@@ -23,7 +23,7 @@ int main(){
             INPUT inp = {0};
             inp.type = INPUT_KEYBOARD;
             inp.ki.wVk = 0x57;
-            inp.ki.wScan = MapVirtualKeyEx(0x57, 0, (HKL)0xf0010413);
+            inp.ki.wScan = MapVirtualKeyEx(0x57, MAPVK_VK_TO_VSC, GetKeyboardLayout(0));
             SendInput(1, &inp, sizeof(inp));
         }
 
