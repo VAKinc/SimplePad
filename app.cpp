@@ -35,11 +35,20 @@ int main(){
 
         std::map<int, int>::iterator iter;
         for(iter = bindings.begin(); iter != bindings.end(); iter++){
+            if(pad.GetButtonDown(iter->first)){
+                INPUT inp = {0};
+                inp.type = INPUT_KEYBOARD;
+                inp.ki.wVk = iter->second;
+                inp.ki.wScan = MapVirtualKeyEx(iter->second, MAPVK_VK_TO_VSC, GetKeyboardLayout(0));
+                SendInput(1, &inp, sizeof(inp));
+            }
+
             if(pad.GetButtonUp(iter->first)){
                 INPUT inp = {0};
                 inp.type = INPUT_KEYBOARD;
                 inp.ki.wVk = iter->second;
                 inp.ki.wScan = MapVirtualKeyEx(iter->second, MAPVK_VK_TO_VSC, GetKeyboardLayout(0));
+                inp.ki.dwFlags = KEYEVENTF_KEYUP;
                 SendInput(1, &inp, sizeof(inp));
             }
         }
