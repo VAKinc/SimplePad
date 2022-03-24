@@ -2,18 +2,20 @@
 #include <windows.h>
 #include <fstream>
 #include <string>
+#include <map>
 
 #include "config_parser.h"
-#include "../models/config.h"
 
 namespace pad2key{
-    void ConfigParser::ParseConfigFile(Config *config){
+    std::map<int, int> ConfigParser::ParseConfigFile(int *controller_id){
         std::ifstream ifs("config.ini");
 
         if(!ifs.good()){
             throw std::runtime_error("Cannot open config.ini, is the file missing?");
         }
-        Config c = *config;
+
+        std::map<int, int> bind;
+
         for(;;) {
             std::string line;
             std::getline(ifs, line);
@@ -24,57 +26,26 @@ namespace pad2key{
             
             if(key == "CONTROLLER_ID"){
                 int v = std::stoi(value);
-                if(v > 0 && v <= 4) c.pad_id = v - 1;
+                if(v > 0 && v <= 4) *controller_id = v - 1;
                 else throw std::invalid_argument("Invalid controller ID setting (valid options a 1~4).");
             }
-            else if(key == "DPAD_DOWN"){
-                c.dpad_down = ParseStringToVKCode(value);
-            }
-            else if(key == "DPAD_UP"){
-                c.dpad_up = ParseStringToVKCode(value);
-            }
-            else if(key == "DPAD_LEFT"){
-                c.dpad_left = ParseStringToVKCode(value);
-            }
-            else if(key == "DPAD_RIGHT"){
-                c.dpad_right = ParseStringToVKCode(value);
-            }
-            else if(key == "START"){
-                c.start = ParseStringToVKCode(value);
-            }
-            else if(key == "BACK"){
-                c.back = ParseStringToVKCode(value);
-            }
-            else if(key == "L_STICK"){
-                c.l_stick = ParseStringToVKCode(value);
-            }
-            else if(key == "R_STICK"){
-                c.r_stick = ParseStringToVKCode(value);
-            }
-            else if(key == "L_BUMPER"){
-                c.l_bumper = ParseStringToVKCode(value);
-            }
-            else if(key == "R_BUMPER"){
-                c.r_bumper = ParseStringToVKCode(value);
-            }
-            else if(key == "A"){
-                c.a = ParseStringToVKCode(value);
-            }
-            else if(key == "B"){
-                c.b = ParseStringToVKCode(value);
-            }
-            else if(key == "X"){
-                c.x = ParseStringToVKCode(value);
-            }
-            else if(key == "Y"){
-                c.y = ParseStringToVKCode(value);
+            else {
+                if(_xinput_codes.count(key) && _vk_codes.count(value)){
+                    auto iter = _xinput_codes.find(key);
+                    int xinput = iter->second;
+                    iter = _vk_codes.find(value);
+                    int keyboard = iter->second;
+                    bind.insert({xinput, keyboard});
+
+                    std::cout << "Bound " << key << " to " << value << std::endl;
+                }
             }
         }
         if(!ifs.eof()){
             throw std::runtime_error("Error reading config.");
         }
 
-        *config = c;
+        return bind;
     }
 
     int ConfigParser::ParseStringToVKCode(std::string s){
