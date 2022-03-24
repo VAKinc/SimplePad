@@ -1,6 +1,7 @@
-#include "gamepad.h"
 #include <Xinput.h>
 #include <iostream>
+
+#include "gamepad.h"
 
 namespace pad2key{
     // Default constructor

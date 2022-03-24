@@ -1,51 +1,19 @@
 #include <iostream>
 #include <windows.h>
-#include <fstream>
-#include <string>
-#include <map>
 
-#include "gamepad.h"
+#include "./utils/gamepad.h"
+#include "./utils/config_parser.h"
+#include "./models/config.h"
 
 using namespace pad2key;
 
 Gamepad pad;
-std::map<std::string, std::string> bindings;
-
-std::string GetValueAtKey(std::string key){
-    auto iter = bindings.find(key);
-    if (iter != bindings.end()){
-        return iter->second;
-    }
-    else{
-        return "";
-    }
-}
+Config config;
+ConfigParser cparser;
 
 void setup(){
-    pad = Gamepad();
-    std::ifstream ifs("config.ini");
-
-    if(!ifs.good()){
-        throw std::runtime_error("Cannot open config.ini, is the file missing?");
-    }
-
-    for(;;) {
-        std::string line;
-        std::getline(ifs, line);
-        if(!ifs) break;
-        int delim = line.find("=");
-        bindings.insert(std::pair<std::string, std::string>(line.substr(0, delim), line.substr(delim + 1, line.length())));
-    }
-    if(!ifs.eof()){
-        throw std::runtime_error("Error reading config.");
-    }
-
-    int pad_no = std::stoi(GetValueAtKey("CONTROLLER_ID")) - 1;
-    if(pad_no > 3 || pad_no < 0){
-        throw std::runtime_error("Invalid pad ID.");
-    }
-
-    pad = Gamepad(pad_no);
+    cparser.ParseConfigFile(&config);
+    pad = Gamepad(config.pad_id);
 }
 
 int main(){
