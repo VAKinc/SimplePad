@@ -47,9 +47,4 @@ namespace pad2key{
 
         return bind;
     }
-
-    int ConfigParser::ParseStringToVKCode(std::string s){
-        //TODO
-        return 0x57;
-    }
 }

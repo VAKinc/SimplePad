@@ -12,7 +12,6 @@ ConfigParser cparser;
 int controller_id;
 std::map<int, int> bindings;
 
-
 void setup(){
     bindings = cparser.ParseConfigFile(&controller_id);
     pad = Gamepad(controller_id);
