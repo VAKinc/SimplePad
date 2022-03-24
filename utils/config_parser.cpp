@@ -7,14 +7,12 @@
 #include "config_parser.h"
 
 namespace pad2key{
-    std::map<int, int> ConfigParser::ParseConfigFile(int *controller_id){
+    std::map<int, int> ConfigParser::ParseConfigFile(std::map<int, int> bind, int *controller_id){
         std::ifstream ifs("config.ini");
 
         if(!ifs.good()){
             throw std::runtime_error("Cannot open config.ini, is the file missing?");
         }
-
-        std::map<int, int> bind;
 
         for(;;) {
             std::string line;
@@ -31,11 +29,18 @@ namespace pad2key{
             }
             else {
                 if(_xinput_codes.count(key) && _vk_codes.count(value)){
-                    auto iter = _xinput_codes.find(key);
+                    std::map<std::string, int>::const_iterator iter = _xinput_codes.find(key);
                     int xinput = iter->second;
                     iter = _vk_codes.find(value);
                     int keyboard = iter->second;
-                    bind.insert({xinput, keyboard});
+
+                    if(bind.count(xinput)){
+                        std::map<int, int>::iterator it = bind.find(xinput);
+                        it->second = keyboard;
+                    }
+                    else{
+                        bind.insert({xinput, keyboard});
+                    }
 
                     std::cout << "Bound " << key << " to " << value << std::endl;
                 }

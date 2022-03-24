@@ -5,12 +5,12 @@
 #include <Xinput.h>
 
 #define KEYBOARD_W  0x57
+#define KEYBOARD_X  0x58
 
 namespace pad2key{
     class ConfigParser{
         public:
-            std::map<int, int> ParseConfigFile(int *controller_id);
-            int ParseStringToVKCode(std::string value);
+            std::map<int, int> ParseConfigFile(std::map<int, int> bind, int *controller_id);
 
         private:
             const std::map<std::string, int> _xinput_codes = {

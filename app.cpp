@@ -9,11 +9,13 @@ using namespace pad2key;
 
 Gamepad pad;
 ConfigParser cparser;
-int controller_id;
-std::map<int, int> bindings;
+int controller_id = 0;
+std::map<int, int> bindings = {
+    {XINPUT_GAMEPAD_A, KEYBOARD_X}
+};
 
 void setup(){
-    bindings = cparser.ParseConfigFile(&controller_id);
+    bindings = cparser.ParseConfigFile(bindings, &controller_id);
     pad = Gamepad(controller_id);
 }
 
