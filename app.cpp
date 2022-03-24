@@ -1,19 +1,62 @@
 #include <iostream>
 #include <windows.h>
+#include <fstream>
+#include <string>
+#include <map>
 
 #include "gamepad.h"
 
 using namespace pad2key;
 
-Gamepad pad(0);
+Gamepad pad;
+std::map<std::string, std::string> bindings;
+
+std::string GetValueAtKey(std::string key){
+    auto iter = bindings.find(key);
+    if (iter != bindings.end()){
+        return iter->second;
+    }
+    else{
+        return "";
+    }
+}
+
+void setup(){
+    pad = Gamepad();
+    std::ifstream ifs("config.ini");
+
+    if(!ifs.good()){
+        throw std::runtime_error("Cannot open config.ini, is the file missing?");
+    }
+
+    for(;;) {
+        std::string line;
+        std::getline(ifs, line);
+        if(!ifs) break;
+        int delim = line.find("=");
+        bindings.insert(std::pair<std::string, std::string>(line.substr(0, delim), line.substr(delim + 1, line.length())));
+    }
+    if(!ifs.eof()){
+        throw std::runtime_error("Error reading config.");
+    }
+
+    int pad_no = std::stoi(GetValueAtKey("CONTROLLER_ID")) - 1;
+    if(pad_no > 3 || pad_no < 0){
+        throw std::runtime_error("Invalid pad ID.");
+    }
+
+    pad = Gamepad(pad_no);
+}
 
 int main(){
+    setup();
+
     if(pad.Connected()){
         std::cout << "Connected!\n";
-        
     }
     else{
         std::cout << "Not connected.\n";
+        return 0;
     }
 
     bool is_listening = true;
